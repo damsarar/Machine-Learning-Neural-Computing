@@ -5,6 +5,9 @@ import pandas as pd
 # importing dataset
 train_data = pd.read_csv('insurance_dataset.csv', sep=',')
 
+# train_data = pd.get_dummies(train_data)
+# print(train_data.head())
+
 # converting categorical values to numerical values
 claenup_values = {"sex": {"male": 1, "female": 0},
                   "smoker": {"yes": 1, "no": 0}, "region": {"southwest": 1, "southeast": 2, "northwest": 3, "northeast": 4}}
@@ -71,3 +74,4 @@ print("m3 = ", m3)
 print("m4 = ", m4)
 print("m5 = ", m5)
 print("c = ", c)
+
