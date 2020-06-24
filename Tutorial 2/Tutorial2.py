@@ -49,3 +49,17 @@ class NeuralNetwork:
     # derivative of sigmoid function implementation
     def sigmoid_derivative(self, z):
         return z*(1-z)
+
+    # feedforward function implementation
+    def feedforward(self):
+        # feedforward to layer 1
+        self.layer1 = self.sigmoid(np.dot(self.input, self.weights1))
+
+        # feedforward to layer 2
+        self.layer2 = self.sigmoid(np.dot(self.layer1, self.weights2))
+
+        return self.layer2
+
+    def backprop(self):
+        np.dot(self.layer1.T, 2*(self.y - self.output)
+               * self.sigmoid_derivative(self.output))
