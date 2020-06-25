@@ -34,8 +34,8 @@ training_y, testing_y = labels[:margin, :], labels[margin:, :]
 class NeuralNetwork:
     def __init__(self):
         # initialize weights with randow values
-        self.weights1 = np.random.rand(9, 4)
-        self.weights2 = np.random.rand(4, 1)
+        self.weights1 = np.random.rand(9, 5)
+        self.weights2 = np.random.rand(5, 1)
 
         # declare variables for pred_output, input and labels
         self.output = None
@@ -60,6 +60,56 @@ class NeuralNetwork:
 
         return self.layer2
 
-    def backprop(self):
-        np.dot(self.layer1.T, 2*(self.y - self.output)
-               * self.sigmoid_derivative(self.output))
+    def backprop(self, learning_rate):
+        # get partial derivative for layer 2 weights
+        d_weights2 = np.dot(self.layer1.T, 2*(self.y - self.output)
+                            * self.sigmoid_derivative(self.output))
+
+        # get partial derivative for layer 1 weights
+        d_weights1 = np.dot(self.input.T, np.dot(2*(self.y - self.output) * self.sigmoid_derivative(self.output), self.weights2.T)
+                            * self.sigmoid_derivative(self.layer1))
+
+        # adjust weights
+        self.weights1 += learning_rate * d_weights1
+        self.weights2 += learning_rate * d_weights2
+
+    def train(self, X, y, learning_rate):
+        # set input and labels
+        self.input = X
+        self.y = y
+
+        # feedforward and setoutput
+        self.output = self.feedforward()
+
+        # backpropagate
+        self.backprop(learning_rate)
+
+        # return training error
+        return np.mean(np.square(y - np.round(self.output)))
+
+    def test(self, X, y):
+        # set input and labels
+        self.input = X
+        self.y = y
+
+        # feedforward and setoutput
+        self.output = self.feedforward()
+
+        # print test results
+        print("\nTesting Results\nError : " +
+              str(np.mean(np.square(y - np.round(self.output)))) + "\n")
+
+
+NN = NeuralNetwork()
+learning_rate = 0.01
+
+# train this network for 1000 iterations
+for i in range(1, 1001):
+    error = NN.train(training_x, training_y, learning_rate)
+
+    # print error after every 10 iterations
+    if i % 10 == 0 or i == 1:
+        print("Iteration : " + str(i)+" | Error : " + str(error))
+
+
+NN.test(testing_x, testing_y)
